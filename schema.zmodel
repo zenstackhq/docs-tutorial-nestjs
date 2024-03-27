@@ -1,0 +1,36 @@
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id Int @id() @default(autoincrement())
+  name String
+  posts Post[]
+
+  // anyone can sign up, and user profiles are public
+  @@allow('create,read', true)
+
+  // users have full access to their own profile
+  @@allow('all', auth() == this)
+}
+
+model Post {
+  id Int @id() @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt()
+  title String
+  published Boolean @default(false)
+  author User @relation(fields: [authorId], references: [id])
+  authorId Int
+
+  // author has full access
+  @@allow('all', auth() == author)
+
+  // published posts are readable to all
+  @@allow('read', published)
+}
