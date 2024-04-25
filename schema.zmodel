@@ -8,8 +8,8 @@ generator client {
 }
 
 model User {
-  id Int @id() @default(autoincrement())
-  name String
+  id    Int    @id() @default(autoincrement())
+  name  String
   posts Post[]
 
   // anyone can sign up, and user profiles are public
@@ -20,13 +20,13 @@ model User {
 }
 
 model Post {
-  id Int @id() @default(autoincrement())
+  id        Int      @id() @default(autoincrement())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt()
-  title String
-  published Boolean @default(false)
-  author User @relation(fields: [authorId], references: [id])
-  authorId Int
+  title     String
+  published Boolean  @default(false)
+  author    User     @relation(fields: [authorId], references: [id])
+  authorId  Int
 
   // author has full access
   @@allow('all', auth() == author)
